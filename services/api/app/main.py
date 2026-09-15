@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     data_dir: Path = Path("/data")
     public_base_url: str = "http://127.0.0.1:8030"
     cors_origins: str = "http://localhost:3000,https://maya.albertomunoz.ai"
+    cors_origin_regex: str = r"https://.*\.vercel\.app"
     maya_drive_folder_id: str | None = None
 
 
@@ -113,10 +114,11 @@ class InferenceIn(BaseModel):
     provenance: dict = {}
 
 
-app = FastAPI(title="Maya Multimodal Corpus API", version="0.1.0", docs_url="/docs")
+app = FastAPI(title="Maya Multimodal Corpus API", version="0.1.1", docs_url="/docs")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[x.strip() for x in settings.cors_origins.split(",") if x.strip()],
+    allow_origin_regex=settings.cors_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
