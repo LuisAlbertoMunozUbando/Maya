@@ -1,0 +1,25 @@
+services:
+  drive-sync:
+    image: rclone/rclone:latest
+    container_name: maya-drive-sync
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        while true; do
+          echo "[maya-drive-sync] Syncing local corpus to Google Drive..."
+          rclone copy /data "$${DRIVE_REMOTE}:$${DRIVE_FOLDER}" \
+            --config /config/rclone.conf \
+            --checksum \
+            --create-empty-src-dirs \
+            --log-level INFO
+          echo "[maya-drive-sync] Sleeping $${DRIVE_SYNC_INTERVAL}s"
+          sleep "$${DRIVE_SYNC_INTERVAL}"
+        done
+    environment:
+      DRIVE_REMOTE: ${DRIVE_REMOTE:-knowledge-drive}
+      DRIVE_FOLDER: ${DRIVE_FOLDER:-Maya}
+      DRIVE_SYNC_INTERVAL: ${DRIVE_SYNC_INTERVAL:-60}
+    volumes:
+      - ./data:/data:ro
+      - ${RCLONE_CONFIG_PATH:-/home/alberto/.config/rclone/rclone.conf}:/config/rclone.conf:ro
+    restart: unless-stopped
