@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.DS_Store
+data/
+*.db
+*.sqlite3
+credentials*.json
+service-account*.json
+.vercel/
