@@ -1,0 +1,12 @@
+services:
+  api:
+    build:
+      context: ./services/api
+    container_name: maya-api
+    restart: unless-stopped
+    env_file:
+      - ./services/api/.env
+    ports:
+      - "127.0.0.1:8030:8030"
+    volumes:
+      - ./data:/data
